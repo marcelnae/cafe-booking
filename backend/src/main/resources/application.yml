@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: cafe-booking-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cafe}
+    username: ${SPRING_DATASOURCE_USERNAME:cafe}
+    password: ${SPRING_DATASOURCE_PASSWORD:cafe}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:please-override-this-very-long-secret-for-dev-only-at-least-256-bits}
+    # milliseconds — 8h shift
+    expiration-ms: 28800000
+  cors:
+    allowed-origins: http://localhost:4200,http://localhost
+
+logging:
+  level:
+    org.springframework.security: INFO
+    com.cafe.booking: DEBUG

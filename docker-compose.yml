@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cafe
+      POSTGRES_USER: cafe
+      POSTGRES_PASSWORD: cafe
+    ports:
+      - "5432:5432"
+    volumes:
+      - cafe-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cafe -d cafe"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cafe
+      SPRING_DATASOURCE_USERNAME: cafe
+      SPRING_DATASOURCE_PASSWORD: cafe
+      APP_JWT_SECRET: change-me-please-change-me-please-change-me
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+
+volumes:
+  cafe-db:
