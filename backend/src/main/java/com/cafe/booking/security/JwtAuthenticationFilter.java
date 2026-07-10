@@ -1,5 +1,6 @@
 package com.cafe.booking.security;
 
+import com.cafe.booking.entity.Waiter;
 import com.cafe.booking.repository.WaiterRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -45,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // Verify the waiter still exists and is active.
                 waiterRepository.findById(waiterId)
-                        .filter(w -> w.isActive())
+                        .filter(Waiter::isActive)
                         .ifPresent(w -> {
                             WaiterPrincipal principal = new WaiterPrincipal(w.getId(), w.getName());
                             UsernamePasswordAuthenticationToken auth =
